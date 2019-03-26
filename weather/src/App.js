@@ -1,62 +1,98 @@
 import React, { Component } from "react";
+import myJson from "./components/Step1.json";
 import Titles from "./components/Titles";
-import Form from "./components/Form";
-import Weather from "./components/Weather";
 import axios from "axios";
+import { Dimmer, Loader, Image, Segment, Container } from "semantic-ui-react";
+import { Grid } from "semantic-ui-react";
+import { Button } from "semantic-ui-react";
+import { Dropdown } from "semantic-ui-react";
 const key = "8de0ee46b8d4346093951d037f2c97d1";
+var cities = "";
 
 class App extends Component {
-  state = {
-    weatherInfo: [
-      ["temp\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0:\xa0\xa0", null],
-      ["humidity\xa0\xa0\xa0\xa0\xa0:\xa0\xa0", null],
-      [
-        "city\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0:\xa0\xa0",
-        null
-      ],
-      ["description\xa0\xa0:\xa0\xa0", null]
-    ]
+  state = { response: null };
+
+  getCityCodes = () => {
+    const Arraya = myJson.List.map(e => {
+      return { code: e.CityCode, text: e.CityName, key: e.CityCode };
+    });
+
+    return Arraya;
   };
+
+  componentDidMount = () => {
+    this.getWeather(this.getCityCodes());
+  };
+
   getWeather = async e => {
-    e.preventDefault();
-    console.log(e.target.value);
-    const city = e.target.city.value;
-    const country = e.target.country.value;
+    let data = null;
+    const city = e;
+    let response = null;
 
-    if (city && country) {
-      axios
-        .get(
-          `https://api.openweathermap.org/data/2.5/weather?q=${city},${country}&appid=${key}`
-        )
-        .then(json => {
-          console.log(json.data);
-          const data = json.data;
-          const { weatherInfo } = this.state;
-          weatherInfo[0][1] = data.main.temp;
-          weatherInfo[1][1] = data.main.humidity;
-          weatherInfo[2][1] = data.name;
-          weatherInfo[3][1] = data.weather[0].description;
-
-          console.log(weatherInfo);
-          this.setState({ weatherInfo });
-        })
-
-        .catch(error => alert("No data found !"));
-    } else {
-      alert("please fill both !");
+    city.forEach(element => {
+      cities = cities + "," + element.code + "";
+    });
+    try {
+      response = await axios.get(
+        `https://api.openweathermap.org/data/2.5/group?units=metric&id=${cities
+          .substring(1)
+          .replace(/"/g, "")}&appid=${key}`
+      );
+      this.setState({
+        response: response
+      });
+    } catch (error) {
+      console.log(error);
     }
   };
+
   render() {
+    let x = null;
+    if (this.state.response) {
+      x = this.state.response.data.list;
+    }
     return (
-      <div className=" " style={{ paddingTop: "10%" }}>
+      <div className=" ">
         <Titles />
-        <Form getWeather={this.getWeather}>
-          {" "}
-          <Weather weatherInfo={this.state.weatherInfo} />
-        </Form>
+        {x !== null ? (
+          <Container>
+            {x.map(e => {
+              return (
+                <Container>
+                  <Segment>
+                    <ul>
+                      <Segment>
+                        <li>
+                          Name:<h1>{e.name}</h1>
+                        </li>{" "}
+                      </Segment>
+                      <Segment>
+                        {" "}
+                        <li>
+                          temp:<h1>{e.main.temp}</h1>
+                        </li>
+                      </Segment>
+                      <Segment>
+                        <li>
+                          description:<h1>{e.weather[0].description}</h1>
+                        </li>
+                      </Segment>
+                      <Segment>
+                        <li>
+                          id:<h1>{e.id}</h1>
+                        </li>
+                      </Segment>
+                    </ul>
+                  </Segment>
+                </Container>
+              );
+            })}
+          </Container>
+        ) : (
+          <h1>not okkkk</h1>
+        )}
       </div>
     );
   }
 }
-
 export default App;

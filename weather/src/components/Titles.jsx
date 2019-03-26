@@ -1,27 +1,30 @@
 import React, { Component } from "react";
+import { Container } from "semantic-ui-react";
+import { Dimmer, Loader, Image, Segment } from "semantic-ui-react";
+import { Grid } from "semantic-ui-react";
 
 const Titles = () => {
   return (
-    <div className="ui two column grid container">
-      <div class="row">
-        <div class="olive column">
-          {" "}
-          <div class="ui raised segment">
-            {" "}
-            <h1 style={{ color: "black" }}>Weather finder For cities</h1>
-          </div>
-        </div>
-        <div class="blue column">
-          {" "}
-          <div class="ui raised segment">
-            {" "}
-            <h2 style={{ color: "black" }}>
-              Find all information about Weather{" "}
-            </h2>
-          </div>
-        </div>
-      </div>
-    </div>
+    <React.Fragment>
+      <Container>
+        <Grid columns={2}>
+          <Grid.Column floated="left" color="olive">
+            <Segment>
+              {" "}
+              <h4 style={{ color: "black" }}>Weather finder For cities</h4>
+            </Segment>
+          </Grid.Column>
+          <Grid.Column floated="right" color="blue">
+            <Segment>
+              {" "}
+              <h4 style={{ color: "black" }}>
+                Find all information about Weather{" "}
+              </h4>
+            </Segment>
+          </Grid.Column>
+        </Grid>
+      </Container>
+    </React.Fragment>
   );
 };
 
