@@ -1,98 +1,77 @@
 import React, { Component } from "react";
-import myJson from "./components/Step1.json";
-import Titles from "./components/Titles";
+import "./App.css";
+import JsonData from "./res/Step1.json";
 import axios from "axios";
-import { Dimmer, Loader, Image, Segment, Container } from "semantic-ui-react";
-import { Grid } from "semantic-ui-react";
-import { Button } from "semantic-ui-react";
-import { Dropdown } from "semantic-ui-react";
+import { Card, Icon, Container, Image } from "semantic-ui-react";
+import { Header, Segment } from "semantic-ui-react";
+
 const key = "8de0ee46b8d4346093951d037f2c97d1";
-var cities = "";
 
 class App extends Component {
-  state = { response: null };
-
-  getCityCodes = () => {
-    const Arraya = myJson.List.map(e => {
-      return { code: e.CityCode, text: e.CityName, key: e.CityCode };
-    });
-
-    return Arraya;
+  state = {
+    resolved: []
   };
-
-  componentDidMount = () => {
-    this.getWeather(this.getCityCodes());
-  };
-
-  getWeather = async e => {
-    let data = null;
-    const city = e;
-    let response = null;
-
-    city.forEach(element => {
-      cities = cities + "," + element.code + "";
-    });
-    try {
-      response = await axios.get(
-        `https://api.openweathermap.org/data/2.5/group?units=metric&id=${cities
-          .substring(1)
-          .replace(/"/g, "")}&appid=${key}`
-      );
-      this.setState({
-        response: response
+  getWeather = async () => {
+    return await axios
+      .get(
+        `https://api.openweathermap.org/data/2.5/group?units=metric&id=${JsonData.List.map(
+          e => {
+            return e.CityCode;
+          }
+        ).join(",")}&appid=${key} `
+      )
+      .then(e => {
+        console.log(e.data.list);
+        this.setState({ resolved: e.data.list });
+      })
+      .catch(error => {
+        console.log(error);
       });
-    } catch (error) {
-      console.log(error);
-    }
   };
-
+  componentDidMount = () => {
+    this.getWeather();
+  };
   render() {
-    let x = null;
-    if (this.state.response) {
-      x = this.state.response.data.list;
-    }
     return (
-      <div className=" ">
-        <Titles />
-        {x !== null ? (
-          <Container>
-            {x.map(e => {
+      <React.Fragment>
+        <div style={{ marginBottom: "40px" }}>
+          <Header as="h2" attached="top" textAlign="center">
+            ALL about your city Weather
+          </Header>
+          <Segment attached textAlign="center">
+            Current weather and forecasts in your city
+          </Segment>
+        </div>
+        <Container>
+          <Card.Group itemsPerRow={3}>
+            {this.state.resolved.map(e => {
               return (
-                <Container>
-                  <Segment>
-                    <ul>
-                      <Segment>
-                        <li>
-                          Name:<h1>{e.name}</h1>
-                        </li>{" "}
-                      </Segment>
-                      <Segment>
-                        {" "}
-                        <li>
-                          temp:<h1>{e.main.temp}</h1>
-                        </li>
-                      </Segment>
-                      <Segment>
-                        <li>
-                          description:<h1>{e.weather[0].description}</h1>
-                        </li>
-                      </Segment>
-                      <Segment>
-                        <li>
-                          id:<h1>{e.id}</h1>
-                        </li>
-                      </Segment>
-                    </ul>
-                  </Segment>
-                </Container>
+                <Card key={e.id}>
+                  <Card.Content>
+                    <Card.Header>CityName :{e.name + ""}</Card.Header>
+                    <Card.Meta>id:{e.id}</Card.Meta>
+                    <Card.Description>
+                      Description: {e.weather[0].description}
+                      temp:<h1>Temperature :{e.main.temp} &#8451;</h1>
+                    </Card.Description>
+                  </Card.Content>
+                  <Card.Content extra>
+                    <a>
+                      <img
+                        id={e.weather[0].icon}
+                        src="http://openweathermap.org/img/w/10d.png"
+                        alt="Weather icon"
+                      />
+                    </a>
+                  </Card.Content>
+                </Card>
               );
             })}
-          </Container>
-        ) : (
-          <h1>not okkkk</h1>
-        )}
-      </div>
+          </Card.Group>
+        </Container>
+      </React.Fragment>
     );
   }
 }
+
 export default App;
