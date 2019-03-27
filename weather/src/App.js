@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import "./App.css";
 import JsonData from "./res/Step1.json";
 import axios from "axios";
-import { Card, Icon, Container, Image } from "semantic-ui-react";
-import { Header, Segment } from "semantic-ui-react";
+import Title from "./component/Title";
+import Items from "./component/Items";
 
 const key = "8de0ee46b8d4346093951d037f2c97d1";
 
@@ -11,6 +11,7 @@ class App extends Component {
   state = {
     resolved: []
   };
+
   getWeather = async () => {
     return await axios
       .get(
@@ -28,47 +29,16 @@ class App extends Component {
         console.log(error);
       });
   };
+
   componentDidMount = () => {
     this.getWeather();
   };
+
   render() {
     return (
       <React.Fragment>
-        <div style={{ marginBottom: "40px" }}>
-          <Header as="h2" attached="top" textAlign="center">
-            ALL about your city Weather
-          </Header>
-          <Segment attached textAlign="center">
-            Current weather and forecasts in your city
-          </Segment>
-        </div>
-        <Container>
-          <Card.Group itemsPerRow={3}>
-            {this.state.resolved.map(e => {
-              return (
-                <Card key={e.id}>
-                  <Card.Content>
-                    <Card.Header>CityName :{e.name + ""}</Card.Header>
-                    <Card.Meta>id:{e.id}</Card.Meta>
-                    <Card.Description>
-                      Description: {e.weather[0].description}
-                      temp:<h1>Temperature :{e.main.temp} &#8451;</h1>
-                    </Card.Description>
-                  </Card.Content>
-                  <Card.Content extra>
-                    <a>
-                      <img
-                        id={e.weather[0].icon}
-                        src="http://openweathermap.org/img/w/10d.png"
-                        alt="Weather icon"
-                      />
-                    </a>
-                  </Card.Content>
-                </Card>
-              );
-            })}
-          </Card.Group>
-        </Container>
+        <Title />
+        <Items promis={this.state.resolved} />
       </React.Fragment>
     );
   }
