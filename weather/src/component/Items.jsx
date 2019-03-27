@@ -13,7 +13,7 @@ const Items = props => {
                 <Card.Meta>id:{e.id}</Card.Meta>
                 <Card.Description>
                   Description: {e.weather[0].description}
-                  temp:<h1>Temperature :{e.main.temp} &#8451;</h1>
+                 <h1>Temperature :{e.main.temp} &#8451;</h1>
                 </Card.Description>
               </Card.Content>
               <Card.Content extra>
