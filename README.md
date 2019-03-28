@@ -1,2 +1,1 @@
-# trainee-weatherapp-ishanv
-
+trainee-weatherapp-ishanv

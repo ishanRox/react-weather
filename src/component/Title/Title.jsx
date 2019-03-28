@@ -1,9 +1,10 @@
-import React, { Component } from "react";
+import React from "react";
 import { Header, Segment } from "semantic-ui-react";
+import "./TitleCss.css";
 
 const Title = () => {
   return (
-    <div style={{ marginBottom: "40px" }}>
+    <div className="TitleCss">
       <Header as="h2" attached="top" textAlign="center">
         ALL about your city Weather
       </Header>
