@@ -1,8 +1,11 @@
 import React, { Component } from "react";
 import Title from "./component/Title/Title";
-import Items from "./component/Item/Items";
-import getWeather from "./Api/GetWeather";
+import Items from "./component/Items";
+import getCityInfoList from "../src/Api/Reqest";
+import generateCommaString from "../src/Utils/ArrayToWord";
+import JsonData from "../src/Assets/Step1.json";
 import { Loader } from "semantic-ui-react";
+
 class App extends Component {
   state = {
     isCityInfoLoaded: false,
@@ -13,7 +16,7 @@ class App extends Component {
     try {
       this.setState({
         isCityInfoLoaded: true,
-        cityInfoList: await getWeather()
+        cityInfoList: await getCityInfoList(generateCommaString(JsonData))
       });
     } catch (error) {
       console.log(error);

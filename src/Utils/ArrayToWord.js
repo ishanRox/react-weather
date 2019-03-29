@@ -1,6 +1,4 @@
-import JsonData from "../../Assets/Json/Step1.json";
-
-const generateCommaString = () => {
+const generateCommaString = JsonData => {
   const commaString = JsonData.List.map(e => {
     return e.CityCode;
   }).join(",");
